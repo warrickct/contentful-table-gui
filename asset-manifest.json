@@ -1,0 +1,26 @@
+{
+  "files": {
+    "main.css": "/contentful-table-gui/static/css/main.8c8b27cf.chunk.css",
+    "main.js": "/contentful-table-gui/static/js/main.2524bfe4.chunk.js",
+    "main.js.map": "/contentful-table-gui/static/js/main.2524bfe4.chunk.js.map",
+    "runtime-main.js": "/contentful-table-gui/static/js/runtime-main.b5bc96fc.js",
+    "runtime-main.js.map": "/contentful-table-gui/static/js/runtime-main.b5bc96fc.js.map",
+    "static/css/2.2ccf9cee.chunk.css": "/contentful-table-gui/static/css/2.2ccf9cee.chunk.css",
+    "static/js/2.09814629.chunk.js": "/contentful-table-gui/static/js/2.09814629.chunk.js",
+    "static/js/2.09814629.chunk.js.map": "/contentful-table-gui/static/js/2.09814629.chunk.js.map",
+    "static/js/3.4f5be942.chunk.js": "/contentful-table-gui/static/js/3.4f5be942.chunk.js",
+    "static/js/3.4f5be942.chunk.js.map": "/contentful-table-gui/static/js/3.4f5be942.chunk.js.map",
+    "index.html": "/contentful-table-gui/index.html",
+    "static/css/2.2ccf9cee.chunk.css.map": "/contentful-table-gui/static/css/2.2ccf9cee.chunk.css.map",
+    "static/css/main.8c8b27cf.chunk.css.map": "/contentful-table-gui/static/css/main.8c8b27cf.chunk.css.map",
+    "static/js/2.09814629.chunk.js.LICENSE.txt": "/contentful-table-gui/static/js/2.09814629.chunk.js.LICENSE.txt",
+    "static/media/logo.6ce24c58.svg": "/contentful-table-gui/static/media/logo.6ce24c58.svg"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.b5bc96fc.js",
+    "static/css/2.2ccf9cee.chunk.css",
+    "static/js/2.09814629.chunk.js",
+    "static/css/main.8c8b27cf.chunk.css",
+    "static/js/main.2524bfe4.chunk.js"
+  ]
+}
