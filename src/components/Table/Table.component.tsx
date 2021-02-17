@@ -4,12 +4,17 @@ import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
 import { render } from '@testing-library/react';
 
+const TableHeader = styled.th`
+    background-color: pink;
+`;
+
 const TableCell = styled.td`
-    padding: 1rem;
+    padding: 0rem;
 `
 
 const TableRow = styled.tr`
-    padding: 0.5em;
+    padding: 0em;
+    margin: 0em;
     // background-color: green;
 `
 const HorizontalDiv = styled.div`
@@ -45,6 +50,12 @@ const Table = () => {
 
     // thoughts: adding row / cell alter the data, re-render the whole table based on when the data model changes.
     // adding row/ column will add empty table objects which will be rendered 
+
+    const handleToggleHeader = () => {
+        toggleHeader(!useHeader);
+    }
+
+    const [useHeader, toggleHeader] = useState(true);
 
     /**
      * Adds a row to the table with a size determined by the current column count.
@@ -95,11 +106,27 @@ const Table = () => {
         // table[that row]
     }
 
+    /**
+     * reduces the column size for the next row to be created
+     */
     const removeCol = () => {
-        // some trickier logic for removing a column.
+        setCol(col - 1);
     }
 
-    const renderTable = () => {
+    /**
+     * removes the end/bottom row of the table
+     */
+    const removeRow = () => {
+        let newTableData = [...tableData];
+        newTableData.pop();
+        setTableData(newTableData);
+    }
+
+    const renderHeader = () => {
+        console.log('hi');
+    }
+
+    const renderTableBody = () => {
         return tableData.map((row, rowIdx) => {
             return <TableRow key={"row" + rowIdx}>
                 {renderRow(row, rowIdx)}
@@ -137,11 +164,13 @@ const Table = () => {
     return (
         <>
             <table>
+                <thead>
+                    <tr>
+                        {/* {renderHeader()} */}
+                    </tr>
+                </thead>
                 <tbody>
-                    <thead>
-
-                    </thead>
-                    {renderTable()}
+                    {renderTableBody()}
                 </tbody>
             </table>
             <div>
@@ -152,7 +181,10 @@ const Table = () => {
             </div>
             <HorizontalDiv>
                 <Button buttonType="primary" onClick={addRow}>Add Row</Button>
+                <Button buttonType="primary" onClick={removeRow}>Remove Row</Button>
                 <Button buttonType="primary" onClick={addCol}>Add Column</Button>
+                <Button buttonType="primary" onClick={removeCol}>Remove Column</Button>
+                <Button buttonType="primary" onClick={handleToggleHeader}>Toggle Header</Button>
             </HorizontalDiv>
         </>
     )
