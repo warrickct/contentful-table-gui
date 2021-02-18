@@ -1,10 +1,21 @@
-import React, { Component, useState } from 'react';
-import { Button, SkeletonDisplayText, TextField, TableBody, TableCell, TableRow, Table, TableHead, Heading, SectionHeading } from '@contentful/forma-36-react-components';
+import React, { useState } from 'react';
+import {
+    Button,
+    TextField,
+    TableBody,
+    TableCell,
+    TableRow,
+    Table,
+    TableHead,
+    Heading,
+    ToggleButton,
+    Switch,
+    DisplayText,
+    Subheading
+} from '@contentful/forma-36-react-components';
 import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
-import { render } from '@testing-library/react';
-
-import { init, locations, Locations } from "@contentful/app-sdk";
+import { init  } from "@contentful/app-sdk";
 
 const TableHeader = styled.th`
     background-color: pink;
@@ -94,6 +105,9 @@ const TableExtension = (props: any) => {
      * reduces the column size for the next row to be created
      */
     const removeCol = () => {
+        if (col <= 0) {
+            return;
+        }
         setCol(col - 1);
     }
 
@@ -101,12 +115,15 @@ const TableExtension = (props: any) => {
      * removes the end/bottom row of the table
      */
     const removeRow = () => {
+        if (tableData.length <= 0) {
+            return;
+        }
         let newTableData = [...tableData];
         newTableData.pop();
         updateTableStateAndField(newTableData);
     }
 
-    const renderTableBody = () => {
+    const renderTableRows = () => {
         return tableData.map((row, rowIdx) => {
             return <TableRow key={"row" + rowIdx}>
                 {renderRow(row, rowIdx)}
@@ -148,25 +165,36 @@ const TableExtension = (props: any) => {
         });
     }
 
+    // const renderHeader = () => {
+        
+    //     //  return tableData.slice(0, 1).map((row, rowIdx) => {
+    //     //     return <TableRow key={"row" + rowIdx}>
+    //     //         {renderRow(row, rowIdx)}
+    //     //     </TableRow>
+
+    //     // });
+    //         return renderRow(tableData[0], 0)
+    // }
+
     return (
         <>
-            <Heading>Table</Heading>
             <Table>
                 <TableHead>
-                    <tr>
+                    {/* <tr> */}
                         {/* {renderHeader()} */}
-                    </tr>
+                    {/* </tr> */}
                 </TableHead>
                 <TableBody>
-                    {renderTableBody()}
+                    {renderTableRows()}
                 </TableBody>
             </Table>
-            <div>
-                Rows: {tableData.length}, Columns: {col}
-            </div>
-            <div>
-                Headers: {useHeader ? 'on' : 'off'}
-            </div>
+            <Subheading>
+                Rows: {tableData.length} Columns: {col}
+            </Subheading>
+            <HorizontalDiv>
+                <ToggleButton isActive={useHeader}  onToggle={handleToggleHeader}
+                >Headers</ToggleButton>
+            </HorizontalDiv>
             <HorizontalDiv>
                 <Button buttonType="primary" size="small" onClick={addRow}>Add Row</Button>
                 <Button buttonType="primary" size="small" onClick={removeRow}>Remove Row</Button>
@@ -174,9 +202,6 @@ const TableExtension = (props: any) => {
             <HorizontalDiv>
                 <Button buttonType="primary" size="small" onClick={addCol}>Add Column</Button>
                 <Button buttonType="primary" size="small" onClick={removeCol}>Remove Column</Button>
-            </HorizontalDiv>
-            <HorizontalDiv>
-                <Button buttonType="primary" size="small" onClick={handleToggleHeader}>Toggle Header</Button>
             </HorizontalDiv>
         </>
     )
