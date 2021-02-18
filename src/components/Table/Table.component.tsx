@@ -30,7 +30,7 @@ const HorizontalDiv = styled.div`
     flex-direction: horizontal;
     
     > * {
-        margin: 0.5rem;
+        margin: 0.25rem;
     }
 `;
 
@@ -150,7 +150,7 @@ const TableExtension = (props: any) => {
 
     return (
         <>
-            <Heading>Custom Table</Heading>
+            <Heading>Table</Heading>
             <Table>
                 <TableHead>
                     <tr>
@@ -166,9 +166,6 @@ const TableExtension = (props: any) => {
             </div>
             <div>
                 Headers: {useHeader ? 'on' : 'off'}
-            </div>
-            <div>
-
             </div>
             <HorizontalDiv>
                 <Button buttonType="primary" size="small" onClick={addRow}>Add Row</Button>
