@@ -13,7 +13,6 @@ const TableHeader = styled.th`
 const TableCell = styled.td`
     padding: 0rem;
 `
-
 const TableRow = styled.tr`
     padding: 0em;
     margin: 0em;
@@ -30,17 +29,6 @@ const HorizontalDiv = styled.div`
 `;
 
 // TODO: Import in form 36 fcss for more consistent styling
-
-// import Cell from '../'
-// import Row from '../'
-
-const Row = () => {
-    return (
-        <tr>
-
-        </tr>
-    )
-}
 
 const TableExtension = (props: any) => {
 
@@ -90,7 +78,6 @@ const TableExtension = (props: any) => {
 
     const addCol = () => {
         setCol(col + 1);
-        // let newTable = [...tableData];
         // TODO: expand all columns for existing rows?
     }
 
@@ -184,7 +171,5 @@ const TableExtension = (props: any) => {
 }
 
 export default TableExtension;
-
-
 
 // build the html for the rows, create the data on save? Data should be a variable as it's to re-render the page.
