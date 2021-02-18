@@ -1,14 +1,20 @@
 import './App.css';
 import TableExtension from "./components/Table/Table.component";
-// import { init } from "@contentful/app-sdk";
+import styled from 'styled-components';
+
+const AppContainer = styled.div`
+  overflow: hidden;
+  border-radius: 10px;
+`;
+
 
 function App() {
     return (
-      <div className="App">
+      <AppContainer className="App">
         <header className="App-header">
           <TableExtension></TableExtension>
         </header>
-      </div>
+      </AppContainer>
     );
 }
 

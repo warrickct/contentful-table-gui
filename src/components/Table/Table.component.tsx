@@ -1,10 +1,10 @@
 import React, { Component, useState } from 'react';
-import { Button, TextField } from '@contentful/forma-36-react-components';
+import { Button, SkeletonDisplayText, TextField } from '@contentful/forma-36-react-components';
 import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
 import { render } from '@testing-library/react';
 
-// import { init } from "@contentful/app-sdk";
+import { init, locations, Locations } from "@contentful/app-sdk";
 
 const TableHeader = styled.th`
     background-color: pink;
@@ -42,78 +42,56 @@ const Row = () => {
     )
 }
 
-
 const TableExtension = (props: any) => {
 
-    // let { sdk } = props;
-
-    // console.log(sdk);
-
-// init((sdk) => {
-    //     console.log(sdk);
-    // });
+    init((sdk: any) => {
+        sdk.window.startAutoResizer();
+    });
 
     // a set of rows.
     const [tableData, setTableData] = useState<any[]>([]);
     const [row, setRow] = useState<string[]>([]);
     const [col, setCol] = useState<number>(0);
-
-    // thoughts: adding row / cell alter the data, re-render the whole table based on when the data model changes.
-    // adding row/ column will add empty table objects which will be rendered 
+    const [useHeader, toggleHeader] = useState(true);
 
     const handleToggleHeader = () => {
         toggleHeader(!useHeader);
+        updateTableData(tableData);
     }
 
-    const [useHeader, toggleHeader] = useState(true);
+
+    /** wrapper to ensure table changes synchronize with contentful field value changes. */
+    const updateTableData = (tableData: any[]) => {
+        // updating react component state
+        setTableData(tableData);
+
+        // // update the field value
+        init((sdk: any) => {
+            sdk.field.setValue({
+                useHeader,
+                tableData
+            });
+        })
+    }
 
     /**
      * Adds a row to the table with a size determined by the current column count.
      */
     const addRow = () => {
-        // little bit of admin surrounding adding row. If row is reduced and data inside, maybe add alert?
-        // setRowCount(rowCount.push([]))
-
-        // let newTable = tableData;
-        // console.log({newTable});
-
-        // let newArr = [...newTable];
-        // console.log({newArr}); 
-
-        // add a row to the table, the size of the column size.
+        if (col <= 0) {
+            return;
+        }
         let table: any[] = [...tableData];
         let additionalRow = new Array(col).fill(null);
         table.push(additionalRow);
-
-        // console.log({table});
         setTableData(table);
         console.log({ tableData });
     }
 
     const addCol = () => {
         setCol(col + 1);
-        // copy current table
-        // let newTable = tableData;
-        let newTable = [...tableData];
-        // console.log({ newTable });
-
-        // // iterate through table rows
-        // newTable.map((row, index) => {
-        //     // if curRow length < col
-        //     if (row.length < col) {
-        //         // copy cur Row and create new, larger row w/ old values spread into it
-        //         let newRow = new Array(col);
-
-
-        //         // TODO: this isn't right. Should be some padding function
-        //         newRow.push(...row);
-
-        //         // store the new row with pad
-        //     }
-        // })
-
-
-        // table[that row]
+        // let newTable = [...tableData];
+        // TODO: expand all columns for existing rows?
     }
 
     /**
@@ -184,7 +162,10 @@ const TableExtension = (props: any) => {
                 </tbody>
             </table>
             <div>
-                Row: {row}, Col: {col}
+                Rows: {tableData.length}, Columns: {col}
+            </div>
+            <div>
+                Headers: {useHeader}
             </div>
             <div>
 
@@ -192,8 +173,12 @@ const TableExtension = (props: any) => {
             <HorizontalDiv>
                 <Button buttonType="primary" onClick={addRow}>Add Row</Button>
                 <Button buttonType="primary" onClick={removeRow}>Remove Row</Button>
+            </HorizontalDiv>
+            <HorizontalDiv>
                 <Button buttonType="primary" onClick={addCol}>Add Column</Button>
                 <Button buttonType="primary" onClick={removeCol}>Remove Column</Button>
+            </HorizontalDiv>
+            <HorizontalDiv>
                 <Button buttonType="primary" onClick={handleToggleHeader}>Toggle Header</Button>
             </HorizontalDiv>
         </>
