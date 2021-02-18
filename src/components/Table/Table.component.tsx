@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { Button, SkeletonDisplayText, TextField } from '@contentful/forma-36-react-components';
+import { Button, SkeletonDisplayText, TextField, TableBody, TableCell, TableRow, Table, TableHead, Heading, SectionHeading } from '@contentful/forma-36-react-components';
 import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
 import { render } from '@testing-library/react';
@@ -14,12 +14,12 @@ const TableHeader = styled.th`
 //     useHeader: boolean;
 // }
 
-const TableCell = styled.td`
+const CustomTableCell = styled.td`
     padding: 0rem;
 `
-    // TODO: Add dynamic header color based on state -- background-color: ${(props: TableCellProps) => props.useHeader ? "#ffffff" : "#e2e2e2"};
+// TODO: Add dynamic header color based on state -- background-color: ${(props: TableCellProps) => props.useHeader ? "#ffffff" : "#e2e2e2"};
 
-const TableRow = styled.tr`
+const CustomTableRow = styled.tr`
     padding: 0em;
     margin: 0em;
     // background-color: green;
@@ -65,6 +65,7 @@ const TableExtension = (props: any) => {
                 useHeader,
                 tableData
             });
+            // console.log(sdk.field.getValue());
         })
     }
 
@@ -149,35 +150,36 @@ const TableExtension = (props: any) => {
 
     return (
         <>
-            <table>
-                <thead>
+            <Heading>Custom Table</Heading>
+            <Table>
+                <TableHead>
                     <tr>
                         {/* {renderHeader()} */}
                     </tr>
-                </thead>
-                <tbody>
+                </TableHead>
+                <TableBody>
                     {renderTableBody()}
-                </tbody>
-            </table>
+                </TableBody>
+            </Table>
             <div>
                 Rows: {tableData.length}, Columns: {col}
             </div>
             <div>
-                Headers: { useHeader ? 'on' : 'off'}
+                Headers: {useHeader ? 'on' : 'off'}
             </div>
             <div>
 
             </div>
             <HorizontalDiv>
-                <Button buttonType="primary" onClick={addRow}>Add Row</Button>
-                <Button buttonType="primary" onClick={removeRow}>Remove Row</Button>
+                <Button buttonType="primary" size="small" onClick={addRow}>Add Row</Button>
+                <Button buttonType="primary" size="small" onClick={removeRow}>Remove Row</Button>
             </HorizontalDiv>
             <HorizontalDiv>
-                <Button buttonType="primary" onClick={addCol}>Add Column</Button>
-                <Button buttonType="primary" onClick={removeCol}>Remove Column</Button>
+                <Button buttonType="primary" size="small" onClick={addCol}>Add Column</Button>
+                <Button buttonType="primary" size="small" onClick={removeCol}>Remove Column</Button>
             </HorizontalDiv>
             <HorizontalDiv>
-                <Button buttonType="primary" onClick={handleToggleHeader}>Toggle Header</Button>
+                <Button buttonType="primary" size="small" onClick={handleToggleHeader}>Toggle Header</Button>
             </HorizontalDiv>
         </>
     )
