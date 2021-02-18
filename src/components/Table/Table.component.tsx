@@ -4,6 +4,8 @@ import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
 import { render } from '@testing-library/react';
 
+// import { init } from "@contentful/app-sdk";
+
 const TableHeader = styled.th`
     background-color: pink;
 `;
@@ -40,8 +42,16 @@ const Row = () => {
     )
 }
 
-const Table = () => {
-    // these might cause re-render loop?
+
+const TableExtension = (props: any) => {
+
+    // let { sdk } = props;
+
+    // console.log(sdk);
+
+// init((sdk) => {
+    //     console.log(sdk);
+    // });
 
     // a set of rows.
     const [tableData, setTableData] = useState<any[]>([]);
@@ -190,7 +200,7 @@ const Table = () => {
     )
 }
 
-export default Table;
+export default TableExtension;
 
 
 
