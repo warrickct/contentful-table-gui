@@ -110,10 +110,6 @@ const TableExtension = (props: any) => {
         setTableData(newTableData);
     }
 
-    const renderHeader = () => {
-        console.log('hi');
-    }
-
     const renderTableBody = () => {
         return tableData.map((row, rowIdx) => {
             return <TableRow key={"row" + rowIdx}>
@@ -141,6 +137,8 @@ const TableExtension = (props: any) => {
                     id={`table-cell-y${rowIdx}-x${cellIdx}`}
                     labelText={``}
                     // helpText={`Input your text.`}
+                    // TODO: Implement better header visual indicator
+                    // helpText={rowIdx == 0  && useHeader ? 'Header' : ''}
                     aria-label={`Input for row ${rowIdx}, cell ${cellIdx}`}
                     onChange={e => updateCellData(e, rowIdx, cellIdx)}
                     textarea
