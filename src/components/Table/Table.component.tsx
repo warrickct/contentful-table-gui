@@ -10,9 +10,15 @@ const TableHeader = styled.th`
     background-color: pink;
 `;
 
+// interface TableCellProps {
+//     useHeader: boolean;
+// }
+
 const TableCell = styled.td`
     padding: 0rem;
 `
+    // TODO: Add dynamic header color based on state -- background-color: ${(props: TableCellProps) => props.useHeader ? "#ffffff" : "#e2e2e2"};
+
 const TableRow = styled.tr`
     padding: 0em;
     margin: 0em;
@@ -44,12 +50,12 @@ const TableExtension = (props: any) => {
 
     const handleToggleHeader = () => {
         toggleHeader(!useHeader);
-        updateTableData(tableData);
+        updateTableStateAndField(tableData);
     }
 
 
     /** wrapper to ensure table changes synchronize with contentful field value changes. */
-    const updateTableData = (tableData: any[]) => {
+    const updateTableStateAndField = (tableData: any[]) => {
         // updating react component state
         setTableData(tableData);
 
@@ -62,6 +68,8 @@ const TableExtension = (props: any) => {
         })
     }
 
+
+
     /**
      * Adds a row to the table with a size determined by the current column count.
      */
@@ -72,7 +80,7 @@ const TableExtension = (props: any) => {
         let table: any[] = [...tableData];
         let additionalRow = new Array(col).fill(null);
         table.push(additionalRow);
-        setTableData(table);
+        updateTableStateAndField(table);
         console.log({ tableData });
     }
 
@@ -94,7 +102,7 @@ const TableExtension = (props: any) => {
     const removeRow = () => {
         let newTableData = [...tableData];
         newTableData.pop();
-        setTableData(newTableData);
+        updateTableStateAndField(newTableData);
     }
 
     const renderTableBody = () => {
@@ -111,11 +119,16 @@ const TableExtension = (props: any) => {
     const updateCellData = (event: any, rowIdx: number, cellIdx: number) => {
         let newTableData = [...tableData]; // copy the object
         newTableData[rowIdx][cellIdx] = event.target.value // update the singular cell entry
-        setTableData(newTableData); // update the tableData state. (not sure if it's necessary?)
+        updateTableStateAndField(newTableData); // update the tableData state. (not sure if it's necessary?)
         console.log({ tableData });
     }
 
 
+    /**
+     * Creates a row within the table
+     * @param row A row which is an array of string values
+     * @param rowIdx The index of the row currently being created
+     */
     const renderRow = (row: string[], rowIdx: number) => {
         return row.map((item, cellIdx) => {
             return <TableCell>
@@ -150,7 +163,7 @@ const TableExtension = (props: any) => {
                 Rows: {tableData.length}, Columns: {col}
             </div>
             <div>
-                Headers: {useHeader}
+                Headers: { useHeader ? 'on' : 'off'}
             </div>
             <div>
 
