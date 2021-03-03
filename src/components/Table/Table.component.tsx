@@ -36,22 +36,22 @@ const TableContainer = styled.div`
     overflow-x: auto;
     padding: 1rem;
 
-    .table---fixed {
-        table-layout: auto;
-        width: 100%;
-    }
 `;
+    // .table---fixed {
+    //     table-layout: auto;
+    //     width: 100%;
+    // }
 
 const CustomTableCell = styled.td`
     padding: 0rem;
-`
+`;
 // TODO: Add dynamic header color based on state -- background-color: ${(props: TableCellProps) => props.useHeader ? "#ffffff" : "#e2e2e2"};
 
 const CustomTableRow = styled.tr`
     padding: 0em;
     margin: 0em;
-    // background-color: green;
-`
+    
+`;
 const HorizontalDiv = styled.div`
     display: flex;
     // margin: 1rem;
@@ -188,30 +188,18 @@ const TableExtension = (props: any) => {
         });
     }
 
-    // const renderHeader = () => {
-
-    //     //  return tableData.slice(0, 1).map((row, rowIdx) => {
-    //     //     return <TableRow key={"row" + rowIdx}>
-    //     //         {renderRow(row, rowIdx)}
-    //     //     </TableRow>
-
-    //     // });
-    //         return renderRow(tableData[0], 0)
-    // }
-
     return (
         // <TableContainer></TableContainer>
+        <>
         <TableContainer>
             <Table className="table---fixed">
                 <TableHead>
-                    {/* <tr> */}
-                    {/* {renderHeader()} */}
-                    {/* </tr> */}
                 </TableHead>
                 <TableBody>
                     {renderTableRows()}
                 </TableBody>
             </Table>
+            </TableContainer>
             <Subheading>
                 Rows: {tableData.length} Columns: {col}
             </Subheading>
@@ -227,7 +215,7 @@ const TableExtension = (props: any) => {
                 <Button buttonType="primary" size="small" onClick={addCol}>Add Column</Button>
                 <Button buttonType="primary" size="small" onClick={removeCol}>Remove Column</Button>
             </HorizontalDiv>
-        </TableContainer>
+        </>
     )
 }
 
