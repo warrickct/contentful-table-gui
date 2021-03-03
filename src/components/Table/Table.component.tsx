@@ -15,7 +15,7 @@ import {
 } from '@contentful/forma-36-react-components';
 import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
-import { init  } from "@contentful/app-sdk";
+import { init } from "@contentful/app-sdk";
 
 const TableHeader = styled.th`
     background-color: pink;
@@ -24,6 +24,23 @@ const TableHeader = styled.th`
 // interface TableCellProps {
 //     useHeader: boolean;
 // }
+
+
+    // max-width: ${window.innerWidth};
+    // overflow-x: auto;
+    // background-color: green;
+    // padding: 1rem;
+
+const TableContainer = styled.div`
+    width: 100%;
+    overflow-x: auto;
+    padding: 1rem;
+
+    .table---fixed {
+        table-layout: auto;
+        width: 100%;
+    }
+`;
 
 const CustomTableCell = styled.td`
     padding: 0rem;
@@ -99,6 +116,12 @@ const TableExtension = (props: any) => {
     const addCol = () => {
         setCol(col + 1);
         // TODO: expand all columns for existing rows?
+
+        console.log(window.innerHeight);
+        console.log('width: ', window.innerWidth);
+        init((sdk: any) => {
+            // console.log('width::', sdk.window.width);
+       });
     }
 
     /**
@@ -166,7 +189,7 @@ const TableExtension = (props: any) => {
     }
 
     // const renderHeader = () => {
-        
+
     //     //  return tableData.slice(0, 1).map((row, rowIdx) => {
     //     //     return <TableRow key={"row" + rowIdx}>
     //     //         {renderRow(row, rowIdx)}
@@ -177,11 +200,12 @@ const TableExtension = (props: any) => {
     // }
 
     return (
-        <>
-            <Table>
+        // <TableContainer></TableContainer>
+        <TableContainer>
+            <Table className="table---fixed">
                 <TableHead>
                     {/* <tr> */}
-                        {/* {renderHeader()} */}
+                    {/* {renderHeader()} */}
                     {/* </tr> */}
                 </TableHead>
                 <TableBody>
@@ -192,7 +216,7 @@ const TableExtension = (props: any) => {
                 Rows: {tableData.length} Columns: {col}
             </Subheading>
             <HorizontalDiv>
-                <ToggleButton isActive={useHeader}  onToggle={handleToggleHeader}
+                <ToggleButton isActive={useHeader} onToggle={handleToggleHeader}
                 >Headers</ToggleButton>
             </HorizontalDiv>
             <HorizontalDiv>
@@ -203,7 +227,7 @@ const TableExtension = (props: any) => {
                 <Button buttonType="primary" size="small" onClick={addCol}>Add Column</Button>
                 <Button buttonType="primary" size="small" onClick={removeCol}>Remove Column</Button>
             </HorizontalDiv>
-        </>
+        </TableContainer>
     )
 }
 
