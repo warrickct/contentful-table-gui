@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Button,
     TextField,
@@ -66,15 +66,29 @@ const HorizontalDiv = styled.div`
 
 const TableExtension = (props: any) => {
 
-    init((sdk: any) => {
-        sdk.window.startAutoResizer();
-    });
+    const initializeExtension = () => {
+        init((sdk: any) => {
+            sdk.window.startAutoResizer();
+        });
+    }
 
     // a set of rows.
     const [tableData, setTableData] = useState<any[]>([]);
     const [row, setRow] = useState<string[]>([]);
     const [col, setCol] = useState<number>(0);
     const [useHeader, toggleHeader] = useState(true);
+
+    initializeExtension();
+
+    useEffect(() => {
+    // console.log({data});
+        init((sdk: any) => {
+            let data = sdk.field.getValue();
+            console.log({tableData});
+            console.log({data});
+            setTableData(data.tableData);
+        });
+    })
 
     const handleToggleHeader = () => {
         toggleHeader(!useHeader);
@@ -112,6 +126,7 @@ const TableExtension = (props: any) => {
     }
 
     const addCol = () => {
+        console.log({tableData});
         setCol(col + 1);
     }
 
@@ -167,6 +182,7 @@ const TableExtension = (props: any) => {
                     name={`table-cell-y${rowIdx}-x${cellIdx}`}
                     id={`table-cell-y${rowIdx}-x${cellIdx}`}
                     labelText={``}
+                    value={item}
                     // helpText={`Input your text.`}
                     // TODO: Implement better header visual indicator
                     // helpText={rowIdx == 0  && useHeader ? 'Header' : ''}
