@@ -68,3 +68,26 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+## Usage Within Contentful
+
+This web application is designed to be used within Contentful and uses the Contentful UI Extension SDK to set and retrieve values.
+
+The github hosted version of this application uses the gh-pages branch which has an unrelated git commit history to the normal development and master branches. In order to update the gh-pages branch you must:
+
+1. Git clone / download the repository
+2. Install the dependencies using `npm i`
+3. Run the deployment command `npm run deploy`
+
+This will build and deploy the web application to the gh-pages branch of the repository and allow it to be accessed by Contentful UI Extensions.
+
+To add this as a UI extension to your Contentful Space
+
+1. Navigate to `<your contentful space>` > `settings` > `extensions` 
+2. Click add extension
+3. Create a name
+4. Uncheck all field types apart from Object
+5. Select self-hosted (src)
+6. Provide the self-hosted URL of this gh-pages web application. (Found in the blurb for this repo).
