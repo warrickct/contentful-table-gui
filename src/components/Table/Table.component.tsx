@@ -66,9 +66,15 @@ const HorizontalDiv = styled.div`
 
 const TableExtension = (props: any) => {
 
+    /**
+     * Starts the entension window auto resizing and unpacks saved table data and metadata.
+     */
     const initializeExtension = () => {
         init((sdk: any) => {
             sdk.window.startAutoResizer();
+            let data = sdk.field.getValue();
+            setTableData(data.tableData);
+            setHeader(data.useHeader);
         });
     }
 
@@ -76,22 +82,15 @@ const TableExtension = (props: any) => {
     const [tableData, setTableData] = useState<any[]>([]);
     const [row, setRow] = useState<string[]>([]);
     const [col, setCol] = useState<number>(0);
-    const [useHeader, toggleHeader] = useState(true);
+    const [useHeader, setHeader] = useState(true);
 
-    initializeExtension();
 
     useEffect(() => {
-    // console.log({data});
-        init((sdk: any) => {
-            let data = sdk.field.getValue();
-            console.log({tableData});
-            console.log({data});
-            setTableData(data.tableData);
-        });
-    })
+        initializeExtension();
+    }, [])
 
     const handleToggleHeader = () => {
-        toggleHeader(!useHeader);
+        setHeader(!useHeader);
         updateTableStateAndField(tableData);
     }
 
@@ -126,7 +125,7 @@ const TableExtension = (props: any) => {
     }
 
     const addCol = () => {
-        console.log({tableData});
+        console.log({ tableData });
         setCol(col + 1);
     }
 
