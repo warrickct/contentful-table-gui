@@ -26,10 +26,10 @@ const TableHeader = styled.th`
 // }
 
 
-    // max-width: ${window.innerWidth};
-    // overflow-x: auto;
-    // background-color: green;
-    // padding: 1rem;
+// max-width: ${window.innerWidth};
+// overflow-x: auto;
+// background-color: green;
+// padding: 1rem;
 
 const TableContainer = styled.div`
     width: 100%;
@@ -37,21 +37,21 @@ const TableContainer = styled.div`
     padding: 1rem;
 
 `;
-    // .table---fixed {
-    //     table-layout: auto;
-    //     width: 100%;
-    // }
+// .table---fixed {
+//     table-layout: auto;
+//     width: 100%;
+// }
 
 const CustomTableCell = styled.td`
     padding: 0rem;
 `;
 // TODO: Add dynamic header color based on state -- background-color: ${(props: TableCellProps) => props.useHeader ? "#ffffff" : "#e2e2e2"};
 
-const CustomTableRow = styled.tr`
-    padding: 0em;
-    margin: 0em;
-    
+const StyledTableRow = styled(TableRow)`
+    background-color: ${(props: any) => props.headers === 'true' ? "#e1e7eb" : 'white'}
 `;
+
+
 const HorizontalDiv = styled.div`
     display: flex;
     // margin: 1rem;
@@ -121,7 +121,7 @@ const TableExtension = (props: any) => {
         console.log('width: ', window.innerWidth);
         init((sdk: any) => {
             // console.log('width::', sdk.window.width);
-       });
+        });
     }
 
     /**
@@ -148,9 +148,9 @@ const TableExtension = (props: any) => {
 
     const renderTableRows = () => {
         return tableData.map((row, rowIdx) => {
-            return <TableRow key={"row" + rowIdx}>
+            return <StyledTableRow headers={`${useHeader && rowIdx == 0}`} key={"row" + rowIdx}>
                 {renderRow(row, rowIdx)}
-            </TableRow>
+            </StyledTableRow>
         });
     }
 
@@ -191,14 +191,14 @@ const TableExtension = (props: any) => {
     return (
         // <TableContainer></TableContainer>
         <>
-        <TableContainer>
-            <Table className="table---fixed">
-                <TableHead>
-                </TableHead>
-                <TableBody>
-                    {renderTableRows()}
-                </TableBody>
-            </Table>
+            <TableContainer>
+                <Table className="table---fixed">
+                    <TableHead>
+                    </TableHead>
+                    <TableBody>
+                        {renderTableRows()}
+                    </TableBody>
+                </Table>
             </TableContainer>
             <Subheading>
                 Rows: {tableData.length} Columns: {col}
