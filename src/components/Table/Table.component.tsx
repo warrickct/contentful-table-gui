@@ -93,7 +93,6 @@ const TableExtension = (props: any) => {
                 useHeader,
                 tableData
             });
-            // console.log(sdk.field.getValue());
         })
     }
 
@@ -110,18 +109,10 @@ const TableExtension = (props: any) => {
         let additionalRow = new Array(col).fill(null);
         table.push(additionalRow);
         updateTableStateAndField(table);
-        console.log({ tableData });
     }
 
     const addCol = () => {
         setCol(col + 1);
-        // TODO: expand all columns for existing rows?
-
-        console.log(window.innerHeight);
-        console.log('width: ', window.innerWidth);
-        init((sdk: any) => {
-            // console.log('width::', sdk.window.width);
-        });
     }
 
     /**
@@ -161,7 +152,6 @@ const TableExtension = (props: any) => {
         let newTableData = [...tableData]; // copy the object
         newTableData[rowIdx][cellIdx] = event.target.value // update the singular cell entry
         updateTableStateAndField(newTableData); // update the tableData state. (not sure if it's necessary?)
-        console.log({ tableData });
     }
 
 
