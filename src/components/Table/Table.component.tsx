@@ -6,12 +6,21 @@ import {
     TableCell,
     TableRow,
     Table,
+    TableHead,
     ToggleButton,
     Subheading
 } from '@contentful/forma-36-react-components';
 import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
 import { init } from "@contentful/app-sdk";
+
+
+        // background-color: ${(props: any) => props.headers === 'true' ? "#798cd4" : 'white'}
+const StyledTableHead = styled(TableHead)`
+        th {
+            background-color: #8897cf;
+        }
+    `;
 
 const TableContainer = styled.div`
     width: 100%;
@@ -147,12 +156,28 @@ const TableExtension = (props: any) => {
     /**
      * Generates the table rows from table data
      */
-    const renderTableRows = () => {
-        return tableData.map((row, rowIdx) => {
-            return <StyledTableRow headers={`${useHeader && rowIdx == 0}`} key={"row" + rowIdx}>
-                {renderRow(row, rowIdx)}
-            </StyledTableRow>
-        });
+    /**
+     * 
+     * @param start starting index of the rows you wish to render
+     * @param end index to end rendering rows
+     */
+    const renderTableRows = (start: number | null = null, end: number | null = null) => {
+        if (tableData.length <= 0) {
+            return;
+        }
+        let styledRows = [];
+        // remapping the values to work with for-loop
+        start = start ? start : 0;
+        end = end ? end : tableData.length;
+        for (let rowIdx = start; rowIdx < end; rowIdx++) {
+            let row = tableData[rowIdx];
+            styledRows.push(
+                <StyledTableRow headers={`${useHeader && rowIdx == 0}`} key={"row" + rowIdx}>
+                    {renderRow(row, rowIdx)}
+                </StyledTableRow>
+            )
+        }
+        return styledRows;
     }
 
     /**
@@ -214,11 +239,37 @@ const TableExtension = (props: any) => {
         let newTableData = lines.map((line: string) => {
             let cells = line.split(',');
             // update column setting for the table
-            maxCols = maxCols < cells.length ? cells.length : maxCols; 
+            maxCols = maxCols < cells.length ? cells.length : maxCols;
             return cells;
         });
         setColumnSize(maxCols);
         updateTableStateAndField(newTableData);
+    }
+
+
+    /**
+     * Determines what table type to create and renders it.
+     */
+    const renderTable = () => {
+        if (useHeader) {
+            // 
+            return (
+                <>
+                    <StyledTableHead>
+                        {renderTableRows(0, 1)}
+                    </StyledTableHead>
+                    <TableBody>
+                        {renderTableRows(1)}
+                    </TableBody>
+                </>
+            )
+        } else {
+            return (
+                <TableBody>
+                    {renderTableRows()}
+                </TableBody>
+            )
+        }
     }
 
     return (
@@ -226,9 +277,7 @@ const TableExtension = (props: any) => {
             <TableContainer >
                 <input onChange={(e) => loadCsv(e)} type="file" accept=".csv"></input>
                 <Table className="table---fixed">
-                    <TableBody>
-                        {renderTableRows()}
-                    </TableBody>
+                    {renderTable()}
                 </Table>
             </TableContainer>
             <Subheading>
