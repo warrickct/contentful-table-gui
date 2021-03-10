@@ -6,30 +6,12 @@ import {
     TableCell,
     TableRow,
     Table,
-    TableHead,
-    Heading,
     ToggleButton,
-    Switch,
-    DisplayText,
     Subheading
 } from '@contentful/forma-36-react-components';
 import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
 import { init } from "@contentful/app-sdk";
-
-const TableHeader = styled.th`
-    background-color: pink;
-`;
-
-// interface TableCellProps {
-//     useHeader: boolean;
-// }
-
-
-// max-width: ${window.innerWidth};
-// overflow-x: auto;
-// background-color: green;
-// padding: 1rem;
 
 const TableContainer = styled.div`
     width: 100%;
@@ -37,20 +19,10 @@ const TableContainer = styled.div`
     padding: 1rem;
 
 `;
-// .table---fixed {
-//     table-layout: auto;
-//     width: 100%;
-// }
-
-const CustomTableCell = styled.td`
-    padding: 0rem;
-`;
-// TODO: Add dynamic header color based on state -- background-color: ${(props: TableCellProps) => props.useHeader ? "#ffffff" : "#e2e2e2"};
 
 const StyledTableRow = styled(TableRow)`
-    background-color: ${(props: any) => props.headers === 'true' ? "#e1e7eb" : 'white'}
+    background-color: ${(props: any) => props.headers === 'true' ? "#798cd4" : 'white'}
 `;
-
 
 const HorizontalDiv = styled.div`
     display: flex;
@@ -62,9 +34,11 @@ const HorizontalDiv = styled.div`
     }
 `;
 
-// TODO: Import in form 36 fcss for more consistent styling
-
 const TableExtension = (props: any) => {
+
+    const [tableData, setTableData] = useState<any[]>([]);
+    const [col, setColumnSize] = useState<number>(3);
+    const [useHeader, setHeader] = useState(true);
 
     /**
      * Starts the entension window auto resizing and unpacks saved table data and metadata.
@@ -77,13 +51,6 @@ const TableExtension = (props: any) => {
             setHeader(data.useHeader);
         });
     }
-
-    // a set of rows.
-    const [tableData, setTableData] = useState<any[]>([]);
-    const [row, setRow] = useState<string[]>([]);
-    const [col, setCol] = useState<number>(0);
-    const [useHeader, setHeader] = useState(true);
-
 
     useEffect(() => {
         initializeExtension();
@@ -109,8 +76,6 @@ const TableExtension = (props: any) => {
         })
     }
 
-
-
     /**
      * Adds a row to the table with a size determined by the current column count.
      */
@@ -125,8 +90,21 @@ const TableExtension = (props: any) => {
     }
 
     const addCol = () => {
-        console.log({ tableData });
-        setCol(col + 1);
+        let newColSize = col + 1;
+        setColumnSize(newColSize);
+        // go through all the pre-existing rows and increase their size.
+        let newTable = [...tableData];
+        // console.log({newTable});
+        newTable.forEach((row, index) => {
+            if (row.length < newColSize) {
+                // increase the row size.
+                let row2 = row.concat(new Array(newColSize - row.length).fill(null));
+                newTable[index] = row2;
+            }
+        });
+        // console.table(newTable);
+        updateTableStateAndField(newTable);
+
     }
 
     /**
@@ -136,7 +114,22 @@ const TableExtension = (props: any) => {
         if (col <= 0) {
             return;
         }
-        setCol(col - 1);
+        let newColumnSize = col - 1;
+        setColumnSize(newColumnSize);
+
+        // go through all the pre-existing rows and increase their size.
+        let newTable = [...tableData];
+        // console.log({newTable});
+        newTable.forEach((row, index) => {
+            if (row.length > newColumnSize) {
+                console.log('reducing column size');
+                // increase the row size.
+                let row2 = row.slice(0, newColumnSize);
+                newTable[index] = row2;
+            }
+        });
+        // console.table(newTable);
+        updateTableStateAndField(newTable);
     }
 
     /**
@@ -151,6 +144,9 @@ const TableExtension = (props: any) => {
         updateTableStateAndField(newTableData);
     }
 
+    /**
+     * Generates the table rows from table data
+     */
     const renderTableRows = () => {
         return tableData.map((row, rowIdx) => {
             return <StyledTableRow headers={`${useHeader && rowIdx == 0}`} key={"row" + rowIdx}>
@@ -168,9 +164,8 @@ const TableExtension = (props: any) => {
         updateTableStateAndField(newTableData); // update the tableData state. (not sure if it's necessary?)
     }
 
-
     /**
-     * Creates a row within the table
+     * Creates the cells of a row within the table
      * @param row A row which is an array of string values
      * @param rowIdx The index of the row currently being created
      */
@@ -183,8 +178,6 @@ const TableExtension = (props: any) => {
                     labelText={``}
                     value={item}
                     // helpText={`Input your text.`}
-                    // TODO: Implement better header visual indicator
-                    // helpText={rowIdx == 0  && useHeader ? 'Header' : ''}
                     aria-label={`Input for row ${rowIdx}, cell ${cellIdx}`}
                     onChange={e => updateCellData(e, rowIdx, cellIdx)}
                     textarea
@@ -193,13 +186,46 @@ const TableExtension = (props: any) => {
         });
     }
 
+    /**
+     * Loads a csv file into the table component.
+     * @param e event
+     */
+    const loadCsv = (e: any) => {
+        let files = e.target.files;
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            if (e && e.target && e.target.result) {
+                let csvText = e.target.result;
+                console.log(typeof (csvText));
+                if (typeof (csvText) == 'string') {
+                    csvToTable(csvText);
+                }
+            }
+        };
+        reader.readAsText(files[0]);
+    }
+
+    /**
+     * Converts a csv formatted text into a 2D table data array.
+     */
+    const csvToTable = (text: string) => {
+        let maxCols = 0;
+        let lines = text.split('\n');
+        let newTableData = lines.map((line: string) => {
+            let cells = line.split(',');
+            // update column setting for the table
+            maxCols = maxCols < cells.length ? cells.length : maxCols; 
+            return cells;
+        });
+        setColumnSize(maxCols);
+        updateTableStateAndField(newTableData);
+    }
+
     return (
-        // <TableContainer></TableContainer>
         <>
-            <TableContainer>
+            <TableContainer >
+                <input onChange={(e) => loadCsv(e)} type="file" accept=".csv"></input>
                 <Table className="table---fixed">
-                    <TableHead>
-                    </TableHead>
                     <TableBody>
                         {renderTableRows()}
                     </TableBody>
