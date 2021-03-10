@@ -15,22 +15,24 @@ import styled from "styled-components";
 import { init } from "@contentful/app-sdk";
 
 
-        // background-color: ${(props: any) => props.headers === 'true' ? "#798cd4" : 'white'}
+// background-color: ${(props: any) => props.headers === 'true' ? "#798cd4" : 'white'}
 const StyledTableHead = styled(TableHead)`
         th {
             background-color: #8897cf;
         }
     `;
 
-const TableContainer = styled.div`
+const StyledTableContainer = styled.div`
     width: 100%;
     overflow-x: auto;
     padding: 1rem;
-
+    display: flex;
+    flex-direction: row;
+    background-color: red;
 `;
 
 const StyledTableRow = styled(TableRow)`
-    background-color: ${(props: any) => props.headers === 'true' ? "#798cd4" : 'white'}
+    background-color: white;
 `;
 
 const HorizontalDiv = styled.div`
@@ -66,6 +68,7 @@ const TableExtension = (props: any) => {
     }, [])
 
     const handleToggleHeader = () => {
+        console.log({tableData});
         setHeader(!useHeader);
         updateTableStateAndField(tableData);
     }
@@ -172,9 +175,17 @@ const TableExtension = (props: any) => {
         for (let rowIdx = start; rowIdx < end; rowIdx++) {
             let row = tableData[rowIdx];
             styledRows.push(
-                <StyledTableRow headers={`${useHeader && rowIdx == 0}`} key={"row" + rowIdx}>
-                    {renderRow(row, rowIdx)}
-                </StyledTableRow>
+                <>
+                    <StyledTableRow key={"row" + rowIdx}>
+                        {renderRow(row, rowIdx)}
+                        {/* {
+                            rowIdx > 0 || !useHeader ?
+                                <Button onClick={() => removeSelectedRow(rowIdx)}>X</Button> :
+                                null
+                        } */}
+                        <Button onClick={() => removeSelectedRow(rowIdx)}>X</Button>
+                    </StyledTableRow>
+                </>
             )
         }
         return styledRows;
@@ -272,14 +283,20 @@ const TableExtension = (props: any) => {
         }
     }
 
+    const removeSelectedRow = (rowIndex: any) => {
+        let newTableData = [...tableData];
+        newTableData.splice(rowIndex, 1);
+        updateTableStateAndField(newTableData);
+    }
+
     return (
         <>
-            <TableContainer >
-                <input onChange={(e) => loadCsv(e)} type="file" accept=".csv"></input>
-                <Table className="table---fixed">
+            <input onChange={(e) => loadCsv(e)} type="file" accept=".csv"></input>
+            <StyledTableContainer>
+                <Table>
                     {renderTable()}
                 </Table>
-            </TableContainer>
+            </StyledTableContainer>
             <Subheading>
                 Rows: {tableData.length} Columns: {col}
             </Subheading>
