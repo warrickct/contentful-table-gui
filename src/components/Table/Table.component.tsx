@@ -23,11 +23,15 @@ const StyledFileInput = styled.input`
 
 const StyledLabel = styled.label`
     color: white;
+    font-size: 0.875rem;
+    font-weight: 500;
+    font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 0.25rem;
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
+    border-color: #2e75d4;
     background-color: ${primaryButtonColor};
 `;
 
@@ -51,6 +55,10 @@ const StyledTableCell = styled(TableCell)`
 const StyledVerticalDiv = styled.div`
     display: flex;
     flex-direction: column;
+`;
+
+const StyledDeleteButton = styled(Button)`
+    align-self: center;
 `;
 
 const StyledTableContainer = styled.div`
@@ -232,11 +240,11 @@ const TableExtension = (props: any) => {
             return <TableCell>
                 <StyledVerticalDiv>
                     {rowIdx === 0 ?
-                        <Button
+                        <StyledDeleteButton
                             icon="Delete"
                             aria-label={`Delete column ${cellIdx}`}
                             onClick={() => removeSelectedColumn(cellIdx)}>
-                        </Button>
+                        </StyledDeleteButton>
                         : null
                     }
                     <TextField
@@ -244,8 +252,7 @@ const TableExtension = (props: any) => {
                         id={`table-cell-y${rowIdx}-x${cellIdx}`}
                         labelText={``}
                         value={item}
-                        // helpText={`Input your text.`}
-                        aria-label={`Input for row ${rowIdx}, cell ${cellIdx}`}
+                        aria-label={`Text field input for row ${rowIdx}, cell ${cellIdx}`}
                         onChange={e => updateCellData(e, rowIdx, cellIdx)}
                         textarea
                     ></TextField>
@@ -271,6 +278,8 @@ const TableExtension = (props: any) => {
             }
         };
         reader.readAsText(files[0]);
+        // resetting value so re-uploading triggers onchange.
+        e.target.value = null;
     }
 
     /**
