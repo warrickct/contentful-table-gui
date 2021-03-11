@@ -20,7 +20,12 @@ const StyledTableHead = styled(TableHead)`
         th {
             background-color: #8897cf;
         }
-    `;
+`;
+
+const StyledVerticalDiv = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
 
 const StyledTableContainer = styled.div`
     width: 100%;
@@ -28,11 +33,13 @@ const StyledTableContainer = styled.div`
     padding: 1rem;
     display: flex;
     flex-direction: row;
-    background-color: red;
+    background-color: grey;
 `;
 
 const StyledTableRow = styled(TableRow)`
-    background-color: white;
+    background-color: pink;
+    border-radius: 0.25rem;
+    margin: 0.25rem;
 `;
 
 const HorizontalDiv = styled.div`
@@ -68,7 +75,7 @@ const TableExtension = (props: any) => {
     }, [])
 
     const handleToggleHeader = () => {
-        console.log({tableData});
+        console.log({ tableData });
         setHeader(!useHeader);
         updateTableStateAndField(tableData);
     }
@@ -116,22 +123,19 @@ const TableExtension = (props: any) => {
         });
         // console.table(newTable);
         updateTableStateAndField(newTable);
-
     }
 
     /**
      * reduces the column size for the next row to be created
      */
-    const removeCol = () => {
+    const removeEndCol = () => {
         if (col <= 0) {
             return;
         }
         let newColumnSize = col - 1;
         setColumnSize(newColumnSize);
-
         // go through all the pre-existing rows and increase their size.
         let newTable = [...tableData];
-        // console.log({newTable});
         newTable.forEach((row, index) => {
             if (row.length > newColumnSize) {
                 console.log('reducing column size');
@@ -140,7 +144,6 @@ const TableExtension = (props: any) => {
                 newTable[index] = row2;
             }
         });
-        // console.table(newTable);
         updateTableStateAndField(newTable);
     }
 
@@ -158,9 +161,6 @@ const TableExtension = (props: any) => {
 
     /**
      * Generates the table rows from table data
-     */
-    /**
-     * 
      * @param start starting index of the rows you wish to render
      * @param end index to end rendering rows
      */
@@ -177,13 +177,10 @@ const TableExtension = (props: any) => {
             styledRows.push(
                 <>
                     <StyledTableRow key={"row" + rowIdx}>
-                        {renderRow(row, rowIdx)}
-                        {/* {
-                            rowIdx > 0 || !useHeader ?
-                                <Button onClick={() => removeSelectedRow(rowIdx)}>X</Button> :
-                                null
-                        } */}
-                        <Button onClick={() => removeSelectedRow(rowIdx)}>X</Button>
+                        {renderTableCells(row, rowIdx)}
+                        <TableCell>
+                            <Button icon="Delete" onClick={() => removeSelectedRow(rowIdx)}></Button>
+                        </TableCell>
                     </StyledTableRow>
                 </>
             )
@@ -205,19 +202,25 @@ const TableExtension = (props: any) => {
      * @param row A row which is an array of string values
      * @param rowIdx The index of the row currently being created
      */
-    const renderRow = (row: string[], rowIdx: number) => {
+    const renderTableCells = (row: string[], rowIdx: number) => {
         return row.map((item, cellIdx) => {
             return <TableCell>
-                <TextField
-                    name={`table-cell-y${rowIdx}-x${cellIdx}`}
-                    id={`table-cell-y${rowIdx}-x${cellIdx}`}
-                    labelText={``}
-                    value={item}
-                    // helpText={`Input your text.`}
-                    aria-label={`Input for row ${rowIdx}, cell ${cellIdx}`}
-                    onChange={e => updateCellData(e, rowIdx, cellIdx)}
-                    textarea
-                ></TextField>
+                <StyledVerticalDiv>
+                    {rowIdx === 0 ?
+                        <Button icon="Delete" onClick={() => removeSelectedColumn(cellIdx)}></Button>
+                        : null
+                    }
+                    <TextField
+                        name={`table-cell-y${rowIdx}-x${cellIdx}`}
+                        id={`table-cell-y${rowIdx}-x${cellIdx}`}
+                        labelText={``}
+                        value={item}
+                        // helpText={`Input your text.`}
+                        aria-label={`Input for row ${rowIdx}, cell ${cellIdx}`}
+                        onChange={e => updateCellData(e, rowIdx, cellIdx)}
+                        textarea
+                    ></TextField>
+                </StyledVerticalDiv>
             </TableCell>
         });
     }
@@ -257,13 +260,11 @@ const TableExtension = (props: any) => {
         updateTableStateAndField(newTableData);
     }
 
-
     /**
      * Determines what table type to create and renders it.
      */
     const renderTable = () => {
         if (useHeader) {
-            // 
             return (
                 <>
                     <StyledTableHead>
@@ -283,9 +284,21 @@ const TableExtension = (props: any) => {
         }
     }
 
-    const removeSelectedRow = (rowIndex: any) => {
+    /**
+     * Removes a single row at the index specified
+     */
+    const removeSelectedRow = (rowIndex: number) => {
         let newTableData = [...tableData];
         newTableData.splice(rowIndex, 1);
+        updateTableStateAndField(newTableData);
+    }
+
+    const removeSelectedColumn = (colIndex: number) => {
+        let newTableData = [...tableData];
+        newTableData.forEach(row => {
+            row.splice(colIndex, 1);
+        });
+        setColumnSize(col - 1);
         updateTableStateAndField(newTableData);
     }
 
@@ -310,12 +323,10 @@ const TableExtension = (props: any) => {
             </HorizontalDiv>
             <HorizontalDiv>
                 <Button buttonType="primary" size="small" onClick={addCol}>Add Column</Button>
-                <Button buttonType="primary" size="small" onClick={removeCol}>Remove Column</Button>
+                <Button buttonType="primary" size="small" onClick={removeEndCol}>Remove Column</Button>
             </HorizontalDiv>
         </>
     )
 }
 
 export default TableExtension;
-
-// build the html for the rows, create the data on save? Data should be a variable as it's to re-render the page.
