@@ -8,11 +8,28 @@ import {
     Table,
     TableHead,
     ToggleButton,
-    Subheading
+    Subheading,
+    IconButton
 } from '@contentful/forma-36-react-components';
 import '@contentful/forma-36-react-components/dist/styles.css';
 import styled from "styled-components";
 import { init } from "@contentful/app-sdk";
+
+let primaryButtonColor = 'rgb(46, 117, 212)';
+
+const StyledFileInput = styled.input`
+        display: none;
+`;
+
+const StyledLabel = styled.label`
+    color: white;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+    background-color: ${primaryButtonColor};
+`;
 
 
 // background-color: ${(props: any) => props.headers === 'true' ? "#798cd4" : 'white'}
@@ -20,6 +37,15 @@ const StyledTableHead = styled(TableHead)`
         th {
             background-color: #8897cf;
         }
+`;
+
+const StyledTableCell = styled(TableCell)`
+        padding 0 2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center; 
+        width: 100%
+        height: 100%
 `;
 
 const StyledVerticalDiv = styled.div`
@@ -33,13 +59,12 @@ const StyledTableContainer = styled.div`
     padding: 1rem;
     display: flex;
     flex-direction: row;
-    background-color: grey;
 `;
 
 const StyledTableRow = styled(TableRow)`
-    background-color: pink;
-    border-radius: 0.25rem;
     margin: 0.25rem;
+    display: flex;
+    flex-direction: row;
 `;
 
 const HorizontalDiv = styled.div`
@@ -178,9 +203,9 @@ const TableExtension = (props: any) => {
                 <>
                     <StyledTableRow key={"row" + rowIdx}>
                         {renderTableCells(row, rowIdx)}
-                        <TableCell>
-                            <Button icon="Delete" onClick={() => removeSelectedRow(rowIdx)}></Button>
-                        </TableCell>
+                        <StyledTableCell>
+                            <Button aria-label={`Delete row ${rowIdx}`} icon="Delete" onClick={() => removeSelectedRow(rowIdx)}></Button>
+                        </StyledTableCell>
                     </StyledTableRow>
                 </>
             )
@@ -207,7 +232,11 @@ const TableExtension = (props: any) => {
             return <TableCell>
                 <StyledVerticalDiv>
                     {rowIdx === 0 ?
-                        <Button icon="Delete" onClick={() => removeSelectedColumn(cellIdx)}></Button>
+                        <Button
+                            icon="Delete"
+                            aria-label={`Delete column ${cellIdx}`}
+                            onClick={() => removeSelectedColumn(cellIdx)}>
+                        </Button>
                         : null
                     }
                     <TextField
@@ -304,7 +333,10 @@ const TableExtension = (props: any) => {
 
     return (
         <>
-            <input onChange={(e) => loadCsv(e)} type="file" accept=".csv"></input>
+            <StyledLabel htmlFor="csv-file">
+                Import .csv
+            </StyledLabel>
+            <StyledFileInput id="csv-file" onChange={(e) => loadCsv(e)} type="file" accept=".csv"></StyledFileInput>
             <StyledTableContainer>
                 <Table>
                     {renderTable()}
@@ -318,12 +350,12 @@ const TableExtension = (props: any) => {
                 >Headers</ToggleButton>
             </HorizontalDiv>
             <HorizontalDiv>
-                <Button buttonType="primary" size="small" onClick={addRow}>Add Row</Button>
-                <Button buttonType="primary" size="small" onClick={removeRow}>Remove Row</Button>
+                <Button buttonType="primary" size="small" icon="Plus" onClick={addRow} aria-label="Add new row">Row</Button>
+                <Button buttonType="primary" size="small" icon="Minus" onClick={removeRow} aria-label="Remove end row">Row</Button>
             </HorizontalDiv>
             <HorizontalDiv>
-                <Button buttonType="primary" size="small" onClick={addCol}>Add Column</Button>
-                <Button buttonType="primary" size="small" onClick={removeEndCol}>Remove Column</Button>
+                <Button buttonType="primary" size="small" icon="Plus" aria-label="Add new column" onClick={addCol}>Column</Button>
+                <Button buttonType="primary" size="small" icon="Minus" aria-label="Remove end column" onClick={removeEndCol}>Column</Button>
             </HorizontalDiv>
         </>
     )
