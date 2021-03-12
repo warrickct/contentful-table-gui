@@ -16,6 +16,7 @@ import styled from "styled-components";
 import { init } from "@contentful/app-sdk";
 
 let primaryButtonColor = 'rgb(46, 117, 212)';
+let headerColor = '#8897cf';
 
 const StyledFileInput = styled.input`
         display: none;
@@ -39,23 +40,27 @@ const StyledLabel = styled.label`
 // background-color: ${(props: any) => props.headers === 'true' ? "#798cd4" : 'white'}
 const StyledTableHead = styled(TableHead)`
         th {
-            background-color: #8897cf;
+            // background-color: ${headerColor};
         }
 `;
 
-const StyledTableCell = styled(TableCell)`
-        padding 0 2rem;
+const StyledTableCell = styled(TableCell)<{useHeaderColor: boolean}>`
+        padding 1rem;
         display: flex;
         align-items: center;
         justify-content: center; 
-        width: 100%
-        height: 100%
+        flex-direction: column;
+        // width: 100%
+        // height: 100%
+        // background-color: aliceblue !important;
+        ${props => props.useHeaderColor ? `background-color: ${headerColor} !important;` : null};
 `;
 
-const StyledVerticalDiv = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
+// const StyledVerticalDiv = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     background-color: pink;
+// `;
 
 const StyledDeleteButton = styled(Button)`
     align-self: center;
@@ -70,9 +75,13 @@ const StyledTableContainer = styled.div`
 `;
 
 const StyledTableRow = styled(TableRow)`
-    margin: 0.25rem;
+    // margin: 0.25rem;
     display: flex;
     flex-direction: row;
+
+    :hover  {
+        background-color: unset !important;
+    }
 `;
 
 const HorizontalDiv = styled.div`
@@ -89,7 +98,8 @@ const TableExtension = (props: any) => {
 
     const [tableData, setTableData] = useState<any[]>([]);
     const [col, setColumnSize] = useState<number>(3);
-    const [useHeader, setHeader] = useState(true);
+    const [useHorizontalHeaders, setHorizontalHeaders] = useState(true);
+    const [useVerticalHeaders, setVerticalHeaders] = useState(true);
 
     /**
      * Starts the entension window auto resizing and unpacks saved table data and metadata.
@@ -99,7 +109,7 @@ const TableExtension = (props: any) => {
             sdk.window.startAutoResizer();
             let data = sdk.field.getValue();
             setTableData(data.tableData);
-            setHeader(data.useHeader);
+            setHorizontalHeaders(data.useHeader);
         });
     }
 
@@ -107,13 +117,26 @@ const TableExtension = (props: any) => {
         initializeExtension();
     }, [])
 
-    const handleToggleHeader = () => {
+
+    /**
+     * Reserves the state of horizontal header state and updates contentful field value.
+     */
+    const handleToggleHorizontalHeaders = () => {
         console.log({ tableData });
-        setHeader(!useHeader);
+        setHorizontalHeaders(!useHorizontalHeaders);
+        updateTableStateAndField(tableData);
+    }
+
+    const handleToggleVerticalHeaders = () => {
+        console.log({ tableData });
+        setVerticalHeaders(!useVerticalHeaders);
         updateTableStateAndField(tableData);
     }
 
 
+    /**
+     * Reserves the state of vertical header state and updates contentful field value.
+     */
     /** wrapper to ensure table changes synchronize with contentful field value changes. */
     const updateTableStateAndField = (tableData: any[]) => {
         // updating react component state
@@ -122,7 +145,7 @@ const TableExtension = (props: any) => {
         // // update the field value
         init((sdk: any) => {
             sdk.field.setValue({
-                useHeader,
+                useHeader: useHorizontalHeaders,
                 tableData
             });
         })
@@ -136,7 +159,7 @@ const TableExtension = (props: any) => {
             return;
         }
         let table: any[] = [...tableData];
-        let additionalRow = new Array(col).fill(null);
+        let additionalRow = new Array(col).fill("");
         table.push(additionalRow);
         updateTableStateAndField(table);
     }
@@ -150,7 +173,7 @@ const TableExtension = (props: any) => {
         newTable.forEach((row, index) => {
             if (row.length < newColSize) {
                 // increase the row size.
-                let row2 = row.concat(new Array(newColSize - row.length).fill(null));
+                let row2 = row.concat(new Array(newColSize - row.length).fill(""));
                 newTable[index] = row2;
             }
         });
@@ -211,7 +234,7 @@ const TableExtension = (props: any) => {
                 <>
                     <StyledTableRow key={"row" + rowIdx}>
                         {renderTableCells(row, rowIdx)}
-                        <StyledTableCell>
+                        <StyledTableCell useHeaderColor={false}>
                             <Button aria-label={`Delete row ${rowIdx}`} icon="Delete" onClick={() => removeSelectedRow(rowIdx)}></Button>
                         </StyledTableCell>
                     </StyledTableRow>
@@ -237,8 +260,8 @@ const TableExtension = (props: any) => {
      */
     const renderTableCells = (row: string[], rowIdx: number) => {
         return row.map((item, cellIdx) => {
-            return <TableCell>
-                <StyledVerticalDiv>
+            let useHeaderColor = (useVerticalHeaders && cellIdx === 0) || (rowIdx == 0 && useHorizontalHeaders);
+            return <StyledTableCell useHeaderColor={useHeaderColor}>
                     {rowIdx === 0 ?
                         <StyledDeleteButton
                             icon="Delete"
@@ -256,8 +279,7 @@ const TableExtension = (props: any) => {
                         onChange={e => updateCellData(e, rowIdx, cellIdx)}
                         textarea
                     ></TextField>
-                </StyledVerticalDiv>
-            </TableCell>
+            </StyledTableCell>
         });
     }
 
@@ -302,7 +324,7 @@ const TableExtension = (props: any) => {
      * Determines what table type to create and renders it.
      */
     const renderTable = () => {
-        if (useHeader) {
+        if (useHorizontalHeaders) {
             return (
                 <>
                     <StyledTableHead>
@@ -354,10 +376,10 @@ const TableExtension = (props: any) => {
             <Subheading>
                 Rows: {tableData.length} Columns: {col}
             </Subheading>
-            <HorizontalDiv>
-                <ToggleButton isActive={useHeader} onToggle={handleToggleHeader}
-                >Headers</ToggleButton>
-            </HorizontalDiv>
+            <ToggleButton isActive={useVerticalHeaders} onToggle={handleToggleVerticalHeaders}
+            >Vertical Headers</ToggleButton>
+            <ToggleButton isActive={useHorizontalHeaders} onToggle={handleToggleHorizontalHeaders}
+            >Horizontal Headers</ToggleButton>
             <HorizontalDiv>
                 <Button buttonType="primary" size="small" icon="Plus" onClick={addRow} aria-label="Add new row">Row</Button>
                 <Button buttonType="primary" size="small" icon="Minus" onClick={removeRow} aria-label="Remove end row">Row</Button>
