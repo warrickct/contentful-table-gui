@@ -18,6 +18,10 @@ import { init } from "@contentful/app-sdk";
 let primaryButtonColor = 'rgb(46, 117, 212)';
 let headerColor = '#8897cf';
 
+const StyledToggleButton = styled(ToggleButton)`
+    margin: 0.25rem;
+`;
+
 const StyledFileInput = styled.input`
         display: none;
 `;
@@ -145,7 +149,8 @@ const TableExtension = (props: any) => {
         // // update the field value
         init((sdk: any) => {
             sdk.field.setValue({
-                useHeader: useHorizontalHeaders,
+                useHorizontalHeaders,
+                useVerticalHeaders,
                 tableData
             });
         })
@@ -376,10 +381,10 @@ const TableExtension = (props: any) => {
             <Subheading>
                 Rows: {tableData.length} Columns: {col}
             </Subheading>
-            <ToggleButton isActive={useVerticalHeaders} onToggle={handleToggleVerticalHeaders}
-            >Vertical Headers</ToggleButton>
-            <ToggleButton isActive={useHorizontalHeaders} onToggle={handleToggleHorizontalHeaders}
-            >Horizontal Headers</ToggleButton>
+            <StyledToggleButton isActive={useVerticalHeaders} onToggle={handleToggleVerticalHeaders}
+            >Vertical Headers</StyledToggleButton>
+            <StyledToggleButton isActive={useHorizontalHeaders} onToggle={handleToggleHorizontalHeaders}
+            >Horizontal Headers</StyledToggleButton>
             <HorizontalDiv>
                 <Button buttonType="primary" size="small" icon="Plus" onClick={addRow} aria-label="Add new row">Row</Button>
                 <Button buttonType="primary" size="small" icon="Minus" onClick={removeRow} aria-label="Remove end row">Row</Button>
