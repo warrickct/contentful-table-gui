@@ -20,6 +20,10 @@ let primaryButtonColor = 'rgb(46, 117, 212)';
 // let headerColor = '#8897cf';
 let headerColor = '#c3cfd5';
 
+const StyledButton = styled(Button)`
+    min-width: 25%%
+`;
+
 const StyledToggleButton = styled(ToggleButton)`
     margin: 0.25rem;
 `;
@@ -91,8 +95,9 @@ const StyledTableRow = styled(TableRow)`
 `;
 
 const HorizontalDiv = styled.div`
+    width: 70%;
     display: flex;
-    // margin: 1rem;
+    justify-content: center;
     flex-direction: horizontal;
     
     > * {
@@ -386,10 +391,10 @@ const TableExtension = (props: any) => {
                 >Horizontal Headers</StyledToggleButton>
             </HorizontalDiv>
             <HorizontalDiv>
-                <Button isFullWidth={true} buttonType="primary" size="small" icon="Plus" onClick={addRow} aria-label="Add new row">Row</Button>
-                <Button isFullWidth={true} buttonType="primary" size="small" icon="Minus" onClick={removeRow} aria-label="Remove end row">Row</Button>
-                <Button isFullWidth={true} buttonType="primary" size="small" icon="Plus" aria-label="Add new column" onClick={addCol}>Column</Button>
-                <Button isFullWidth={true} buttonType="primary" size="small" icon="Minus" aria-label="Remove end column" onClick={removeEndCol}>Column</Button>
+                <StyledButton isFullWidth={true} buttonType="primary" size="small" icon="Plus" onClick={addRow} aria-label="Add new row">Row</StyledButton>
+                <StyledButton isFullWidth={true} buttonType="primary" size="small" icon="Minus" onClick={removeRow} aria-label="Remove end row">Row</StyledButton>
+                <StyledButton isFullWidth={true} buttonType="primary" size="small" icon="Plus" aria-label="Add new column" onClick={addCol}>Column</StyledButton>
+                <StyledButton isFullWidth={true} buttonType="primary" size="small" icon="Minus" aria-label="Remove end column" onClick={removeEndCol}>Column</StyledButton>
             </HorizontalDiv>
             <StyledTableContainer>
                 <Table>
