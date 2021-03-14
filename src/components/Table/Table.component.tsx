@@ -25,7 +25,7 @@ const StyledButton = styled(Button)`
 
 const StyledToggleButton = styled(ToggleButton)`
     margin: 0.25rem;
-    width: 25%
+    width: 35% !important;
 `;
 
 const StyledFileInput = styled.input`
@@ -77,9 +77,9 @@ const StyledTableContainer = styled.div`
 `;
 
 const StyledTableRow = styled(TableRow)`
-    // margin: 0.25rem;
     display: flex;
     flex-direction: row;
+    justify-content: center;
 
     :hover  {
         background-color: unset !important;
