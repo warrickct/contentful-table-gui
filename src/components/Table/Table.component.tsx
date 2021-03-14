@@ -240,9 +240,11 @@ const TableExtension = (props: any) => {
                 <>
                     <StyledTableRow key={"row" + rowIdx}>
                         {renderTableCells(row, rowIdx)}
-                        <StyledTableCell useHeaderColor={false}>
-                            <Button aria-label={`Delete row ${rowIdx}`} icon="Delete" onClick={() => removeSelectedRow(rowIdx)}></Button>
-                        </StyledTableCell>
+                        {col > 0 ?
+                            <StyledTableCell useHeaderColor={false}>
+                                <Button aria-label={`Delete row ${rowIdx}`} icon="Delete" onClick={() => removeSelectedRow(rowIdx)}></Button>
+                            </StyledTableCell> : null
+                        }
                     </StyledTableRow>
                 </>
             )
