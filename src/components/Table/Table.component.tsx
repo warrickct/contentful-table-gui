@@ -16,7 +16,8 @@ import styled from "styled-components";
 import { init } from "@contentful/app-sdk";
 
 let primaryButtonColor = 'rgb(46, 117, 212)';
-let headerColor = '#8897cf';
+// let headerColor = '#8897cf';
+let headerColor = '#c3cfd5';
 
 const StyledToggleButton = styled(ToggleButton)`
     margin: 0.25rem;
