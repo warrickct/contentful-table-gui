@@ -9,6 +9,7 @@ import {
     TableHead,
     ToggleButton,
     Subheading,
+    HelpText,
     IconButton
 } from '@contentful/forma-36-react-components';
 import '@contentful/forma-36-react-components/dist/styles.css';
@@ -49,7 +50,7 @@ const StyledTableHead = styled(TableHead)`
         }
 `;
 
-const StyledTableCell = styled(TableCell)<{useHeaderColor: boolean}>`
+const StyledTableCell = styled(TableCell) <{ useHeaderColor: boolean }>`
         padding 1rem;
         display: flex;
         align-items: center;
@@ -113,8 +114,10 @@ const TableExtension = (props: any) => {
         init((sdk: any) => {
             sdk.window.startAutoResizer();
             let data = sdk.field.getValue();
-            setTableData(data.tableData);
-            setHorizontalHeaders(data.useHeader);
+            if (data && data.tableData && data.useHeaders) {
+                setTableData(data.tableData);
+                setHorizontalHeaders(data.useHeader);
+            }
         });
     }
 
@@ -268,23 +271,23 @@ const TableExtension = (props: any) => {
         return row.map((item, cellIdx) => {
             let useHeaderColor = (useVerticalHeaders && cellIdx === 0) || (rowIdx == 0 && useHorizontalHeaders);
             return <StyledTableCell useHeaderColor={useHeaderColor}>
-                    {rowIdx === 0 ?
-                        <StyledDeleteButton
-                            icon="Delete"
-                            aria-label={`Delete column ${cellIdx}`}
-                            onClick={() => removeSelectedColumn(cellIdx)}>
-                        </StyledDeleteButton>
-                        : null
-                    }
-                    <TextField
-                        name={`table-cell-y${rowIdx}-x${cellIdx}`}
-                        id={`table-cell-y${rowIdx}-x${cellIdx}`}
-                        labelText={``}
-                        value={item}
-                        aria-label={`Text field input for row ${rowIdx}, cell ${cellIdx}`}
-                        onChange={e => updateCellData(e, rowIdx, cellIdx)}
-                        textarea
-                    ></TextField>
+                {rowIdx === 0 ?
+                    <StyledDeleteButton
+                        icon="Delete"
+                        aria-label={`Delete column ${cellIdx}`}
+                        onClick={() => removeSelectedColumn(cellIdx)}>
+                    </StyledDeleteButton>
+                    : null
+                }
+                <TextField
+                    name={`table-cell-y${rowIdx}-x${cellIdx}`}
+                    id={`table-cell-y${rowIdx}-x${cellIdx}`}
+                    labelText={``}
+                    value={item}
+                    aria-label={`Text field input for row ${rowIdx}, cell ${cellIdx}`}
+                    onChange={e => updateCellData(e, rowIdx, cellIdx)}
+                    textarea
+                ></TextField>
             </StyledTableCell>
         });
     }
@@ -370,30 +373,35 @@ const TableExtension = (props: any) => {
 
     return (
         <>
-            <StyledLabel htmlFor="csv-file">
-                Import .csv
-            </StyledLabel>
-            <StyledFileInput id="csv-file" onChange={(e) => loadCsv(e)} type="file" accept=".csv"></StyledFileInput>
+            <HorizontalDiv>
+                <StyledLabel htmlFor="csv-file">
+                    Import .csv
+                </StyledLabel>
+                <StyledFileInput id="csv-file" onChange={(e) => loadCsv(e)} type="file" accept=".csv"></StyledFileInput>
+            </HorizontalDiv>
+            <HorizontalDiv>
+                <StyledToggleButton isActive={useVerticalHeaders} onToggle={handleToggleVerticalHeaders}
+                >Vertical Headers</StyledToggleButton>
+                <StyledToggleButton isActive={useHorizontalHeaders} onToggle={handleToggleHorizontalHeaders}
+                >Horizontal Headers</StyledToggleButton>
+            </HorizontalDiv>
+            <HorizontalDiv>
+                <Button isFullWidth={true} buttonType="primary" size="small" icon="Plus" onClick={addRow} aria-label="Add new row">Row</Button>
+                <Button isFullWidth={true} buttonType="primary" size="small" icon="Minus" onClick={removeRow} aria-label="Remove end row">Row</Button>
+                <Button isFullWidth={true} buttonType="primary" size="small" icon="Plus" aria-label="Add new column" onClick={addCol}>Column</Button>
+                <Button isFullWidth={true} buttonType="primary" size="small" icon="Minus" aria-label="Remove end column" onClick={removeEndCol}>Column</Button>
+            </HorizontalDiv>
             <StyledTableContainer>
                 <Table>
                     {renderTable()}
                 </Table>
             </StyledTableContainer>
             <Subheading>
-                Rows: {tableData.length} Columns: {col}
+                Grid Dimensions: {tableData.length} x {col}
             </Subheading>
-            <StyledToggleButton isActive={useVerticalHeaders} onToggle={handleToggleVerticalHeaders}
-            >Vertical Headers</StyledToggleButton>
-            <StyledToggleButton isActive={useHorizontalHeaders} onToggle={handleToggleHorizontalHeaders}
-            >Horizontal Headers</StyledToggleButton>
-            <HorizontalDiv>
-                <Button buttonType="primary" size="small" icon="Plus" onClick={addRow} aria-label="Add new row">Row</Button>
-                <Button buttonType="primary" size="small" icon="Minus" onClick={removeRow} aria-label="Remove end row">Row</Button>
-            </HorizontalDiv>
-            <HorizontalDiv>
-                <Button buttonType="primary" size="small" icon="Plus" aria-label="Add new column" onClick={addCol}>Column</Button>
-                <Button buttonType="primary" size="small" icon="Minus" aria-label="Remove end column" onClick={removeEndCol}>Column</Button>
-            </HorizontalDiv>
+            <HelpText>
+                {'You can use basic text modifiers to alter text. bold: **your text**, strike through: ~~your text~~, underline: <u>your text</u>, links: [link title](link url)'}
+            </HelpText>
         </>
     )
 }
