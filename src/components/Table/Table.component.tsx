@@ -17,15 +17,15 @@ import styled from "styled-components";
 import { init } from "@contentful/app-sdk";
 
 let primaryButtonColor = 'rgb(46, 117, 212)';
-// let headerColor = '#8897cf';
 let headerColor = '#c3cfd5';
 
 const StyledButton = styled(Button)`
-    min-width: 25%%
+    width: 25%%
 `;
 
 const StyledToggleButton = styled(ToggleButton)`
     margin: 0.25rem;
+    width: 25%
 `;
 
 const StyledFileInput = styled.input`
@@ -33,6 +33,7 @@ const StyledFileInput = styled.input`
 `;
 
 const StyledLabel = styled.label`
+    width: 25%;
     color: white;
     font-size: 0.875rem;
     font-weight: 500;
@@ -49,9 +50,9 @@ const StyledLabel = styled.label`
 
 // background-color: ${(props: any) => props.headers === 'true' ? "#798cd4" : 'white'}
 const StyledTableHead = styled(TableHead)`
-        th {
-            // background-color: ${headerColor};
-        }
+        // th {
+        //     // background-color: ${headerColor};
+        // }
 `;
 
 const StyledTableCell = styled(TableCell) <{ useHeaderColor: boolean }>`
@@ -60,17 +61,8 @@ const StyledTableCell = styled(TableCell) <{ useHeaderColor: boolean }>`
         align-items: center;
         justify-content: center; 
         flex-direction: column;
-        // width: 100%
-        // height: 100%
-        // background-color: aliceblue !important;
         ${props => props.useHeaderColor ? `background-color: ${headerColor} !important;` : null};
 `;
-
-// const StyledVerticalDiv = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     background-color: pink;
-// `;
 
 const StyledDeleteButton = styled(Button)`
     align-self: center;
