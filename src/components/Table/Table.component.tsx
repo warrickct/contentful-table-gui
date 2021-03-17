@@ -368,12 +368,21 @@ const TableExtension = (props: any) => {
     const csvToTable = (text: string) => {
         let maxCols = 0;
         let lines = text.split('\n');
+
+        // removing trailing newline character
+        if (lines[lines.length -1] == "") {
+            lines.splice(lines.length -1);
+        }
+
+        // convert text into tablerow arrays
         let newTableData = lines.map((line: string) => {
             let cells = csvToCells(line);
             // update column setting for the table
             maxCols = maxCols < cells.length ? cells.length : maxCols;
             return cells;
         });
+
+        
         setColumnSize(maxCols);
         let normalizedTableData  = normalize2DArrayLength(newTableData, maxCols)
         updateTableStateAndField(normalizedTableData);
