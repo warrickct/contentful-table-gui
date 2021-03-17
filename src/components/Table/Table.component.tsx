@@ -312,6 +312,54 @@ const TableExtension = (props: any) => {
         e.target.value = null;
     }
 
+
+    const csvToCells = (str: string) => {
+
+        if (str === "" || str ==="\n" ) {
+            return [];
+        }
+
+        let curCellText: any = "";
+        let cells: string[] = [];
+        let inQuotes: boolean = false;
+
+        for (let i = 0; i < str.length; i++) {
+            let char = str[i];
+
+            if (char === ',') {
+                if (!inQuotes) {
+                    // separate cell at comma, reset cell text
+                    cells.push(curCellText);
+                    curCellText = '';
+                } else {
+                    // dont separate as a cell, add as a displayed comma.
+                    curCellText += char;
+                }
+            }
+            else if (char === '"') {
+                // if theres a starting quote, activate inQuotes
+                if (inQuotes) {
+                    // close existing quote
+                    inQuotes = false;
+                }
+                else {
+                    if (str.indexOf('"', i + 1) > -1) {
+                        // another quote to come - start quote block
+                        inQuotes = true;
+                    } else {
+                        // no more quotes, add as a solitary quote character.
+                        curCellText += char;
+                    }
+                }
+            } else {
+                // regular character, append to the cell text
+                curCellText += char;
+            }
+        }
+        cells.push(curCellText); // push final cell
+        return cells;
+    }
+
     /**
      * Converts a csv formatted text into a 2D table data array.
      */
@@ -319,7 +367,7 @@ const TableExtension = (props: any) => {
         let maxCols = 0;
         let lines = text.split('\n');
         let newTableData = lines.map((line: string) => {
-            let cells = line.split(',');
+            let cells = csvToCells(line);
             // update column setting for the table
             maxCols = maxCols < cells.length ? cells.length : maxCols;
             return cells;
