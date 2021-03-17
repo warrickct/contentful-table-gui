@@ -104,10 +104,6 @@ const TableExtension = (props: any) => {
     const [useHorizontalHeaders, setHorizontalHeaders] = useState(true);
     const [useVerticalHeaders, setVerticalHeaders] = useState(true);
 
-    const clearTableData = () => {
-        updateTableStateAndField([]);
-    }
-
     /**
      * Starts the entension window auto resizing and unpacks saved table data and metadata.
      */
@@ -115,42 +111,46 @@ const TableExtension = (props: any) => {
         init((sdk: any) => {
             sdk.window.startAutoResizer();
             let data = sdk.field.getValue();
-            if (data && data.tableData && data.useHeaders) {
-                setTableData(data.tableData);
-                setHorizontalHeaders(data.useHeader);
+            if (!! data) {
+                if (!! data.tableData) {
+                    setTableData(data.tableData);
+                }
+                if (typeof(data.useVerticalHeaders) == 'boolean') {
+                    setVerticalHeaders(data.useVerticalHeaders);
+                }
+                if (typeof(data.useHorizontalHeaders) == 'boolean') {
+                    setHorizontalHeaders(data.useHorizontalHeaders);
+                }
             }
+            
         });
     }
+
+    useEffect(() => {
+        storeFieldValues();
+        // console.log({tableData});
+        // console.log({useHorizontalHeaders});
+        // console.log({useVerticalHeaders});
+    }, [tableData, useHorizontalHeaders, useVerticalHeaders]);
 
     useEffect(() => {
         initializeExtension();
     }, [])
 
-
     /**
      * Reserves the state of horizontal header state and updates contentful field value.
      */
     const handleToggleHorizontalHeaders = () => {
-        console.log({ tableData });
         setHorizontalHeaders(!useHorizontalHeaders);
-        updateTableStateAndField(tableData);
     }
+
 
     const handleToggleVerticalHeaders = () => {
-        console.log({ tableData });
         setVerticalHeaders(!useVerticalHeaders);
-        updateTableStateAndField(tableData);
     }
 
-
-    /**
-     * Reserves the state of vertical header state and updates contentful field value.
-     */
-    /** wrapper to ensure table changes synchronize with contentful field value changes. */
-    const updateTableStateAndField = (tableData: any[]) => {
-        // updating react component state
-        setTableData(tableData);
-
+    /** uses header and table state data and stores them in content field */
+    const storeFieldValues = () => {
         // // update the field value
         init((sdk: any) => {
             sdk.field.setValue({
@@ -171,7 +171,7 @@ const TableExtension = (props: any) => {
         let table: any[] = [...tableData];
         let additionalRow = new Array(col).fill("");
         table.push(additionalRow);
-        updateTableStateAndField(table);
+        setTableData(table);
     }
 
     const addCol = () => {
@@ -179,9 +179,7 @@ const TableExtension = (props: any) => {
         setColumnSize(newColSize);
         // go through all the pre-existing rows and increase their size.
         let newTable = normalize2DArrayLength([...tableData], newColSize);
-        // console.log({newTable});
-        // console.table(newTable);
-        updateTableStateAndField(newTable);
+        setTableData(newTable)
     }
 
     const normalize2DArrayLength = (arr: any, size: number) => {
@@ -208,7 +206,7 @@ const TableExtension = (props: any) => {
         setColumnSize(newColumnSize);
         // go through all the pre-existing rows and increase their size.
         let newTable = normalize2DArrayLength([...tableData], newColumnSize);
-        updateTableStateAndField(newTable);
+        setTableData(newTable);
     }
 
     /**
@@ -220,7 +218,7 @@ const TableExtension = (props: any) => {
         }
         let newTableData = [...tableData];
         newTableData.pop();
-        updateTableStateAndField(newTableData);
+        setTableData(newTableData);
     }
 
     /**
@@ -260,7 +258,7 @@ const TableExtension = (props: any) => {
     const updateCellData = (event: any, rowIdx: number, cellIdx: number) => {
         let newTableData = [...tableData]; // copy the object
         newTableData[rowIdx][cellIdx] = event.target.value // update the singular cell entry
-        updateTableStateAndField(newTableData); // update the tableData state. (not sure if it's necessary?)
+        setTableData(newTableData);
     }
 
     /**
@@ -303,7 +301,6 @@ const TableExtension = (props: any) => {
         reader.onload = function (e) {
             if (e && e.target && e.target.result) {
                 let csvText = e.target.result;
-                console.log(typeof (csvText));
                 if (typeof (csvText) == 'string') {
                     csvToTable(csvText);
                 }
@@ -317,7 +314,7 @@ const TableExtension = (props: any) => {
 
     const csvToCells = (str: string) => {
 
-        if (str === "" || str ==="\n" ) {
+        if (str === "" || str === "\n") {
             return [];
         }
 
@@ -370,8 +367,8 @@ const TableExtension = (props: any) => {
         let lines = text.split('\n');
 
         // removing trailing newline character
-        if (lines[lines.length -1] == "") {
-            lines.splice(lines.length -1);
+        if (lines[lines.length - 1] == "") {
+            lines.splice(lines.length - 1);
         }
 
         // convert text into tablerow arrays
@@ -381,11 +378,9 @@ const TableExtension = (props: any) => {
             maxCols = maxCols < cells.length ? cells.length : maxCols;
             return cells;
         });
-
-        
         setColumnSize(maxCols);
-        let normalizedTableData  = normalize2DArrayLength(newTableData, maxCols)
-        updateTableStateAndField(normalizedTableData);
+        let normalizedTableData = normalize2DArrayLength(newTableData, maxCols)
+        setTableData(normalizedTableData);
     }
 
     /**
@@ -418,7 +413,7 @@ const TableExtension = (props: any) => {
     const removeSelectedRow = (rowIndex: number) => {
         let newTableData = [...tableData];
         newTableData.splice(rowIndex, 1);
-        updateTableStateAndField(newTableData);
+        setTableData(newTableData);
     }
 
     const removeSelectedColumn = (colIndex: number) => {
@@ -427,7 +422,7 @@ const TableExtension = (props: any) => {
             row.splice(colIndex, 1);
         });
         setColumnSize(col - 1);
-        updateTableStateAndField(newTableData);
+        setTableData(newTableData);
     }
 
     return (
