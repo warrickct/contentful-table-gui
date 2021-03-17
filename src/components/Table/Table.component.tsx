@@ -175,6 +175,7 @@ const TableExtension = (props: any) => {
     }
 
     const addCol = () => {
+        console.log("adding col");
         let newColSize = col + 1;
         setColumnSize(newColSize);
         // go through all the pre-existing rows and increase their size.
@@ -183,13 +184,16 @@ const TableExtension = (props: any) => {
     }
 
     const normalize2DArrayLength = (arr: any, size: number) => {
+        console.log({size});
         arr.forEach((row: any, index: number) => {
             if (row.length < size) {
                 // increase the row size.
                 let row2 = row.concat(new Array(size - row.length).fill(""));
+                console.log(row2);
                 arr[index] = row2;
-            } else if (row.length > size) {
-                arr[index] = row.slice(0, size - 1);
+            } if (row.length > size) {
+                arr[index] = row.slice(0, size);
+
             }
         });
         return arr;
@@ -199,6 +203,7 @@ const TableExtension = (props: any) => {
      * reduces the column size for the next row to be created
      */
     const removeEndCol = () => {
+        console.log('removing col');
         if (col <= 0) {
             return;
         }
@@ -411,12 +416,14 @@ const TableExtension = (props: any) => {
      * Removes a single row at the index specified
      */
     const removeSelectedRow = (rowIndex: number) => {
+        console.log('removing selected row');
         let newTableData = [...tableData];
         newTableData.splice(rowIndex, 1);
         setTableData(newTableData);
     }
 
     const removeSelectedColumn = (colIndex: number) => {
+        console.log('removing selected row');
         let newTableData = [...tableData];
         newTableData.forEach(row => {
             row.splice(colIndex, 1);
