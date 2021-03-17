@@ -104,6 +104,10 @@ const TableExtension = (props: any) => {
     const [useHorizontalHeaders, setHorizontalHeaders] = useState(true);
     const [useVerticalHeaders, setVerticalHeaders] = useState(true);
 
+    const clearTableData = () => {
+        updateTableStateAndField([]);
+    }
+
     /**
      * Starts the entension window auto resizing and unpacks saved table data and metadata.
      */
@@ -174,17 +178,23 @@ const TableExtension = (props: any) => {
         let newColSize = col + 1;
         setColumnSize(newColSize);
         // go through all the pre-existing rows and increase their size.
-        let newTable = [...tableData];
+        let newTable = normalize2DArrayLength([...tableData], newColSize);
         // console.log({newTable});
-        newTable.forEach((row, index) => {
-            if (row.length < newColSize) {
-                // increase the row size.
-                let row2 = row.concat(new Array(newColSize - row.length).fill(""));
-                newTable[index] = row2;
-            }
-        });
         // console.table(newTable);
         updateTableStateAndField(newTable);
+    }
+
+    const normalize2DArrayLength = (arr: any, size: number) => {
+        arr.forEach((row: any, index: number) => {
+            if (row.length < size) {
+                // increase the row size.
+                let row2 = row.concat(new Array(size - row.length).fill(""));
+                arr[index] = row2;
+            } else if (row.length > size) {
+                arr[index] = row.slice(0, size - 1);
+            }
+        });
+        return arr;
     }
 
     /**
@@ -197,15 +207,7 @@ const TableExtension = (props: any) => {
         let newColumnSize = col - 1;
         setColumnSize(newColumnSize);
         // go through all the pre-existing rows and increase their size.
-        let newTable = [...tableData];
-        newTable.forEach((row, index) => {
-            if (row.length > newColumnSize) {
-                console.log('reducing column size');
-                // increase the row size.
-                let row2 = row.slice(0, newColumnSize);
-                newTable[index] = row2;
-            }
-        });
+        let newTable = normalize2DArrayLength([...tableData], newColumnSize);
         updateTableStateAndField(newTable);
     }
 
@@ -373,7 +375,8 @@ const TableExtension = (props: any) => {
             return cells;
         });
         setColumnSize(maxCols);
-        updateTableStateAndField(newTableData);
+        let normalizedTableData  = normalize2DArrayLength(newTableData, maxCols)
+        updateTableStateAndField(normalizedTableData);
     }
 
     /**
