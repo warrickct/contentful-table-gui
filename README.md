@@ -69,13 +69,22 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
-
+---
 
 ## Usage Within Contentful
 
 This web application is designed to be used within Contentful and uses the Contentful UI Extension SDK to set and retrieve values.
 
-The github hosted version of this application uses the gh-pages branch which has an unrelated git commit history to the normal development and master branches. In order to update the gh-pages branch you must:
+The github hosted version of this application uses the gh-pages branch which has an unrelated git commit history to the normal development and master branches. In order to update the gh-pages branch follow the following steps for all stages:
+
+### 1. Github Setup
+
+In order for this extension to be accessed by Contentful, it needs to be externally hosted. This is done via Github pages.
+
+1. Go to this repositories settings and enable github pages.
+2. Copy the URL from the github pages setup and paste the github hub pages URL in the `package.json` of this repostiory in the `homepage` property (should be near the bottom of the package.json).
+
+### 2. Local Setup
 
 1. Git clone / download the repository
 2. Install the dependencies using `npm i`
@@ -83,6 +92,8 @@ The github hosted version of this application uses the gh-pages branch which has
 
 This will build and deploy the web application to the gh-pages branch of the repository and allow it to be accessed by Contentful UI Extensions.
 
+
+### 3. Contentful Setup
 To add this as a UI extension to your Contentful Space
 
 1. Navigate to `<your contentful space>` > `settings` > `extensions` 
@@ -90,4 +101,17 @@ To add this as a UI extension to your Contentful Space
 3. Create a name
 4. Uncheck all field types apart from Object
 5. Select self-hosted (src)
-6. Provide the self-hosted URL of this gh-pages web application. (Found in the blurb for this repo).
+6. Provide the self-hosted URL of this gh-pages web application or from step 2 under the Github setup section of this readme. (Found in the blurb for this repo).
+
+### 4. Adding to a Contentful Content Model
+
+1. Navigate to the content model to add a field to
+2. Select `add field`
+3. Select `JSON object`
+4. Create a name and field ID.
+5. Click `create and configure`
+6. Go to the Appearance tab of the modal.
+7. Select `Editable Table UI Extension` (should be based off the name given when adding the extension in stage 3.)
+8. Click `save`.
+
+You should now see a table UI when editing content or creating an entry using the edited Content Model.
