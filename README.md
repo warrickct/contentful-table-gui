@@ -1,6 +1,16 @@
-# Getting Started with Create React App
+# Contentful Table GUI
+
+This project is made to be used as a Contentful Extension that allows users to create and edit tables through a graphical user interface as well as import tables into Contentful using a .CSV file.
+
+## Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Initial Installation
+
+1. Clone this repository.
+2. Navigate to the repository in your terminal.
+3. Execute `npm install` to install the required packages.
 
 ## Available Scripts
 
